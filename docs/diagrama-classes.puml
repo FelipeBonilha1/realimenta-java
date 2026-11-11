@@ -1,0 +1,240 @@
+@startuml ReAlimentaSP
+skinparam classAttributeIconSize 0
+title ReAlimenta SP — diagrama de classes da API
+
+package "model" {
+  class Estabelecimento {
+    id: Long
+    nome: String
+    tipo: TipoEstabelecimento
+    email: String
+    telefone: String
+    endereco: String
+    bairro: String
+    cidade: String
+  }
+  class Instituicao {
+    id: Long
+    nome: String
+    email: String
+    telefone: String
+    endereco: String
+    bairro: String
+    cidade: String
+  }
+  class LoteAlimento {
+    id: Long
+    estabelecimentoId: Long
+    descricao: String
+    categoria: CategoriaAlimento
+    quantidadeKg: BigDecimal
+    prazoAproveitamento: LocalDateTime
+    status: StatusLote
+  }
+  class Doacao {
+    id: Long
+    loteId: Long
+    instituicaoId: Long
+    status: StatusDoacao
+    dataReserva: LocalDateTime
+    dataColeta: LocalDateTime
+    dataEntrega: LocalDateTime
+    quantidadeEntregueKg: BigDecimal
+  }
+  class Indicadores {
+    kgOfertados: BigDecimal
+    kgEntregues: BigDecimal
+    doacoesEntregues: long
+    instituicoesComEntrega: long
+  }
+  enum TipoEstabelecimento
+  enum CategoriaAlimento
+  enum StatusLote
+  enum StatusDoacao
+}
+
+package "dto" {
+  class EstabelecimentoRequest
+  class EstabelecimentoResponse
+  class InstituicaoRequest
+  class InstituicaoResponse
+  class LoteCriacaoRequest
+  class LoteAtualizacaoRequest
+  class LoteResponse
+  class DoacaoReservaRequest
+  class DoacaoEntregaRequest
+  class DoacaoResponse
+  class IndicadoresResponse
+  class SaudeResponse
+  class ErroResponse
+  class ErroCampo
+}
+
+package "dao" {
+  class EstabelecimentoDAO {
+    + listar(): List
+    + buscarPorId(id): Optional
+    + inserir(estabelecimento)
+    + atualizar(estabelecimento): int
+    + excluir(id): int
+  }
+  class InstituicaoDAO {
+    + listar(): List
+    + buscarPorId(id): Optional
+    + inserir(instituicao)
+    + atualizar(instituicao): int
+    + excluir(id): int
+  }
+  class LoteAlimentoDAO {
+    + listar(): List
+    + listarDisponiveis(agora): List
+    + buscarPorId(id): Optional
+    + buscarPorIdParaAtualizacao(id): Optional
+    + atualizarDados(lote): int
+    + atualizarStatus(id, novo, esperado): int
+    + excluir(id): int
+  }
+  class DoacaoDAO {
+    + inserir(doacao)
+    + buscarPorId(id): Optional
+    + buscarPorIdParaAtualizacao(id): Optional
+    + buscarPorLoteId(loteId): Optional
+    + registrarColeta(id, data): int
+    + registrarEntrega(id, data, quantidade): int
+    + cancelar(id): int
+  }
+  class IndicadoresDAO {
+    + consultar(): Indicadores
+  }
+  class DatasJdbc
+}
+
+package "bo" {
+  class EstabelecimentoBO {
+    + listar(): List
+    + buscar(id): Estabelecimento
+    + criar(estabelecimento): Estabelecimento
+    + atualizar(id, dados): Estabelecimento
+    + excluir(id): void
+  }
+  class InstituicaoBO {
+    + listar(): List
+    + buscar(id): Instituicao
+    + criar(instituicao): Instituicao
+    + atualizar(id, dados): Instituicao
+    + excluir(id): void
+  }
+  class LoteAlimentoBO {
+    + listar(): List
+    + listarDisponiveis(): List
+    + buscar(id): LoteAlimento
+    + criar(lote): LoteAlimento
+    + atualizar(id, dados): LoteAlimento
+    + excluir(id): void
+  }
+  class DoacaoBO {
+    + listar(): List
+    + buscar(id): Doacao
+    + reservar(loteId, instituicaoId): Doacao
+    + coletar(id): Doacao
+    + entregar(id, quantidadeEntregueKg): Doacao
+    + cancelar(id): Doacao
+  }
+  class IndicadoresBO {
+    + consultar(): Indicadores
+  }
+}
+
+package "controller" {
+  class EstabelecimentoController {
+    + GET /api/estabelecimentos
+    + GET /api/estabelecimentos/{id}
+    + POST /api/estabelecimentos
+    + PUT /api/estabelecimentos/{id}
+    + DELETE /api/estabelecimentos/{id}
+  }
+  class InstituicaoController {
+    + GET /api/instituicoes
+    + GET /api/instituicoes/{id}
+    + POST /api/instituicoes
+    + PUT /api/instituicoes/{id}
+    + DELETE /api/instituicoes/{id}
+  }
+  class LoteAlimentoController {
+    + GET /api/lotes
+    + GET /api/lotes/{id}
+    + POST /api/lotes
+    + PUT /api/lotes/{id}
+    + DELETE /api/lotes/{id}
+  }
+  class DoacaoController {
+    + GET /api/doacoes
+    + GET /api/doacoes/{id}
+    + POST /api/doacoes
+    + PUT /api/doacoes/{id}/coleta
+    + PUT /api/doacoes/{id}/entrega
+    + PUT /api/doacoes/{id}/cancelamento
+  }
+  class IndicadoresController {
+    + GET /api/indicadores
+  }
+  class SaudeController {
+    + GET /api/saude
+  }
+}
+
+package "config" {
+  class RelogioConfig
+  class ConexaoInicial
+}
+
+package "exception" {
+  class RecursoNaoEncontradoException
+  class ConflitoNegocioException
+  class DadosInvalidosException
+  class Integridade
+  class TratadorExcecoesGlobal
+}
+
+Estabelecimento "1" o-- "0..*" LoteAlimento : oferece
+Instituicao "1" o-- "0..*" Doacao : recebe
+LoteAlimento "1" o-- "0..1" Doacao : possui
+Estabelecimento --> TipoEstabelecimento
+LoteAlimento --> CategoriaAlimento
+LoteAlimento --> StatusLote
+Doacao --> StatusDoacao
+
+EstabelecimentoController --> EstabelecimentoBO
+InstituicaoController --> InstituicaoBO
+LoteAlimentoController --> LoteAlimentoBO
+DoacaoController --> DoacaoBO
+IndicadoresController --> IndicadoresBO
+
+EstabelecimentoBO --> EstabelecimentoDAO
+EstabelecimentoBO --> LoteAlimentoDAO
+InstituicaoBO --> InstituicaoDAO
+InstituicaoBO --> DoacaoDAO
+LoteAlimentoBO --> LoteAlimentoDAO
+LoteAlimentoBO --> EstabelecimentoDAO
+LoteAlimentoBO --> DoacaoDAO
+DoacaoBO --> DoacaoDAO
+DoacaoBO --> LoteAlimentoDAO
+DoacaoBO --> InstituicaoDAO
+IndicadoresBO --> IndicadoresDAO
+
+LoteAlimentoDAO --> DatasJdbc
+DoacaoDAO --> DatasJdbc
+TratadorExcecoesGlobal ..> ErroResponse
+
+note bottom of DoacaoBO
+  Reserva, coleta, entrega e cancelamento
+  atualizam doacao e lote na mesma transacao.
+  Cada lote admite no maximo uma doacao.
+end note
+
+note bottom of LoteAlimentoBO
+  atualizar trava a linha antes de validar.
+  Nao altera status.
+  Prazo comparado e gravado ate microssegundo.
+end note
+@enduml

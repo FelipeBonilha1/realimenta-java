@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ReAlimenta SP — protótipos visuais</title>
+  <style>
+    :root {
+      --verde: #1f7a4d;
+      --verde-escuro: #14573a;
+      --creme: #f6f3ea;
+      --tinta: #1d241f;
+      --linha: #d9d3c5;
+      --aviso: #8a4b08;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", sans-serif;
+      color: var(--tinta);
+      background: var(--creme);
+    }
+    header {
+      background: var(--verde-escuro);
+      color: white;
+      padding: 24px 32px 16px;
+    }
+    header p { max-width: 760px; margin: 8px 0 0; }
+    .aviso {
+      margin: 16px 32px;
+      padding: 12px 16px;
+      border: 1px solid #e2c28a;
+      background: #fff7e8;
+      color: var(--aviso);
+      border-radius: 8px;
+    }
+    nav {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      padding: 0 32px 8px;
+    }
+    nav button, .acao, .secundario {
+      border: 0;
+      border-radius: 999px;
+      padding: 10px 16px;
+      cursor: pointer;
+      font: inherit;
+    }
+    nav button { background: white; color: var(--verde-escuro); }
+    nav button.ativa { background: var(--verde); color: white; }
+    main { padding: 8px 32px 40px; max-width: 1100px; }
+    section { display: none; }
+    section.visivel { display: block; }
+    h2 { margin-bottom: 4px; }
+    .endpoint { color: #4d5b53; font-size: 14px; }
+    form, table, .cards { background: white; border: 1px solid var(--linha); border-radius: 12px; }
+    form { padding: 16px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    label { display: flex; flex-direction: column; gap: 6px; font-size: 14px; }
+    input, select { padding: 8px; border: 1px solid var(--linha); border-radius: 8px; font: inherit; }
+    .largo { grid-column: 1 / -1; }
+    .acao { background: var(--verde); color: white; justify-self: start; }
+    .secundario { background: #ece7dc; }
+    table { width: 100%; border-collapse: collapse; overflow: hidden; }
+    th, td { text-align: left; padding: 12px; border-bottom: 1px solid var(--linha); }
+    .cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; padding: 16px; }
+    .cards article { background: #f3faf6; border-radius: 10px; padding: 16px; }
+    .cards strong { display: block; font-size: 28px; color: var(--verde-escuro); }
+    .nota { font-size: 13px; color: #4d5b53; }
+    .toast {
+      display: none;
+      margin-top: 12px;
+      padding: 10px 12px;
+      background: #e8f6ee;
+      border-radius: 8px;
+    }
+    @media (max-width: 800px) {
+      form, .cards { grid-template-columns: 1fr; }
+      header, nav, main, .aviso { padding-left: 16px; padding-right: 16px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>ReAlimenta SP</h1>
+    <p>Protótipos estáticos das telas ligadas à API. Servem para o PDF e para a apresentação. Não enviam dados e não estão integrados ao Spring Boot.</p>
+  </header>
+  <p class="aviso">Demonstração visual. Os botões não chamam a API. Os números repetem o roteiro fictício do script de demonstração.</p>
+  <nav>
+    <button class="ativa" data-tela="cadastro">Cadastro de lote</button>
+    <button data-tela="reserva">Consulta e reserva</button>
+    <button data-tela="entrega">Acompanhamento e entrega</button>
+    <button data-tela="painel">Indicadores</button>
+  </nav>
+  <main>
+    <section id="cadastro" class="visivel">
+      <h2>Cadastro de lote</h2>
+      <p class="endpoint">Tela correspondente a POST /api/lotes. O botão não dispara a requisição.</p>
+      <form>
+        <label>Estabelecimento
+          <select><option>1 — Padaria Sol Nascente</option><option>2 — Mercado Bairro Verde</option></select>
+        </label>
+        <label>Categoria
+          <select><option>PANIFICADOS</option><option>PREPARADO</option><option>IN_NATURA</option></select>
+        </label>
+        <label class="largo">Descrição
+          <input value="Paes do dia sem comercializacao">
+        </label>
+        <label>Quantidade (kg)
+          <input value="8.500">
+        </label>
+        <label>Prazo de aproveitamento
+          <input value="2026-11-13T18:00:00">
+        </label>
+        <button class="acao largo" type="button">Publicar lote</button>
+      </form>
+      <p class="toast">Protótipo visual: esta tela não envia dados à API.</p>
+    </section>
+
+    <section id="reserva">
+      <h2>Consulta e reserva de lotes</h2>
+      <p class="endpoint">Listagem correspondente a GET /api/lotes?disponiveis=true. A reserva corresponderia a POST /api/doacoes.</p>
+      <table>
+        <thead>
+          <tr><th>Lote</th><th>Descrição</th><th>Kg</th><th>Prazo</th><th>Situação real</th><th></th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1</td>
+            <td>Paes do dia sem comercializacao</td>
+            <td>8,500</td>
+            <td>dentro de 2 dias</td>
+            <td>Disponível</td>
+            <td><button class="acao" type="button">Reservar lote inteiro</button></td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td>Hortifruti de vespera</td>
+            <td>15,000</td>
+            <td>vencido</td>
+            <td>Fora do filtro de disponíveis</td>
+            <td><button class="secundario" type="button" disabled>Indisponível</button></td>
+          </tr>
+        </tbody>
+      </table>
+      <p class="nota">A instituição do protótipo é o Instituto Acolhe. O lote não é dividido.</p>
+      <p class="toast">Protótipo visual: a reserva não foi enviada.</p>
+    </section>
+
+    <section id="entrega">
+      <h2>Acompanhamento e confirmação de entrega</h2>
+      <p class="endpoint">Consulta GET /api/doacoes/1. Coleta em PUT /api/doacoes/1/coleta. Entrega em PUT /api/doacoes/1/entrega. Cancelamento em PUT /api/doacoes/1/cancelamento.</p>
+      <table>
+        <thead>
+          <tr><th>Doação</th><th>Lote</th><th>Instituição</th><th>Status</th><th>Ofertado</th><th>Entregue</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1</td>
+            <td>Refeicoes prontas do almoco</td>
+            <td>Instituto Acolhe</td>
+            <td>RESERVADA</td>
+            <td>6,000 kg</td>
+            <td>—</td>
+          </tr>
+        </tbody>
+      </table>
+      <form>
+        <label>Quantidade entregue (kg)
+          <input value="5.500">
+        </label>
+        <button class="acao" type="button">Confirmar coleta</button>
+        <button class="acao" type="button">Confirmar entrega</button>
+        <button class="secundario" type="button">Cancelar antes da coleta</button>
+      </form>
+      <p class="nota">Depois da coleta o cancelamento deixa de existir. O prazo não certifica segurança alimentar.</p>
+      <p class="toast">Protótipo visual: nenhuma transição foi gravada.</p>
+    </section>
+
+    <section id="painel">
+      <h2>Painel de indicadores</h2>
+      <p class="endpoint">Tela correspondente a GET /api/indicadores. Não calcula refeições, água ou CO2.</p>
+      <div class="cards">
+        <article><span>Kg ofertados</span><strong>39,500</strong><p class="nota">Soma dos registros de oferta, não dos quilos entregues.</p></article>
+        <article><span>Kg entregues</span><strong>9,500</strong><p class="nota">Somente doações com status ENTREGUE.</p></article>
+        <article><span>Doações entregues</span><strong>1</strong><p class="nota">Reserva e coleta não contam.</p></article>
+        <article><span>Instituições atendidas</span><strong>1</strong><p class="nota">Instituições distintas com entrega recebida.</p></article>
+      </div>
+    </section>
+  </main>
+  <script>
+    const botoes = document.querySelectorAll("nav button");
+    const secoes = document.querySelectorAll("main section");
+    botoes.forEach((botao) => {
+      botao.addEventListener("click", () => {
+        botoes.forEach((item) => item.classList.remove("ativa"));
+        botao.classList.add("ativa");
+        secoes.forEach((secao) => secao.classList.remove("visivel"));
+        document.getElementById(botao.dataset.tela).classList.add("visivel");
+      });
+    });
+    document.querySelectorAll("button.acao, button.secundario").forEach((botao) => {
+      if (botao.closest("nav")) return;
+      botao.addEventListener("click", () => {
+        const aviso = botao.closest("section").querySelector(".toast");
+        aviso.style.display = "block";
+      });
+    });
+  </script>
+</body>
+</html>
