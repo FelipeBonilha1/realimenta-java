@@ -5,18 +5,20 @@
 | Campo | Conteúdo |
 | --- | --- |
 | Nome | ReAlimenta SP |
-| Cidade / bairro | São Paulo. Bairro de atuação da equipe: **PENDENTE** |
+| Cidade / bairro | São Paulo, bairro Bela Vista |
 | Cidadão beneficiado | Pessoas atendidas por instituições sociais que podem receber alimento excedente de estabelecimentos. Não há entrevista, termo de consentimento nem medição com usuários reais neste repositório. |
 | Problema | Estabelecimentos descartam alimento ainda aproveitável enquanto instituições sociais procuram doação. Falta um fluxo simples para publicar o excedente, reservá-lo por inteiro, registrar a coleta e confirmar o que foi entregue. |
 | Funcionamento | O estabelecimento publica um lote. Uma instituição reserva o lote inteiro. A coleta e a entrega são confirmadas em etapas. O cancelamento, antes da coleta, encerra a doação e o lote. Os indicadores mostram quilos registrados na oferta, quilos entregues, doações entregues e instituições distintas que receberam entrega. |
-| Responsabilidade dos módulos | Este repositório é o módulo da API Java. O desenho físico do banco deve ser compartilhado com o responsável de Database Design. Interface de uso real, autenticação e aplicativo não estão neste escopo. Responsáveis nominais: **PENDENTE** |
-| Repositório | **PENDENTE** |
+| Responsabilidade dos módulos | Este repositório é o módulo da API Java. O schema Oracle do grupo foi criado e populado por Database Design. Interface de uso real, autenticação e aplicativo não estão neste escopo. Equipe: Felipe Bonilha (RM562356), Felipe Rodrigues (RM565341), Joan Campos (RM562913) |
+| Repositório | https://github.com/FelipeBonilha1/realimenta-java |
 | Indicador | Quilos registrados nas ofertas, quilos efetivamente entregues, número de doações entregues e número de instituições distintas com entrega. Não há equivalência em refeições, água ou CO2. Não há resultado de impacto medido em campo. |
 | ODS | ODS 2 — Fome zero e agricultura sustentável. ODS 12 — Consumo e produção responsáveis. A relação é de enquadramento do problema. Não é um resultado comprovado. |
 
-Integrantes e RMs: **PENDENTE**
+Integrantes e RMs: Felipe Bonilha (RM562356), Felipe Rodrigues (RM565341), Joan Campos (RM562913).
 
-URL de deploy: **PENDENTE**. A aplicação não foi publicada nesta entrega.
+Professor: Rafael Desiderio.
+
+URL de deploy: preencher aqui após publicar no Render (formato `https://realimenta-java.onrender.com`).
 
 ---
 
@@ -74,20 +76,27 @@ Para o JDBC e o Oracle enxergarem o mesmo relógio, a JVM precisa estar em `Amer
 
 Pré-requisitos na máquina de desenvolvimento:
 
-- JDK 21 instalado e visível no terminal (`java -version`).
-- Nesta máquina, em 11/11/2026, o único JDK encontrado foi o OpenJDK 25.0.2 do Android Studio. O build usou esse JDK com `--release 21`. O bytecode gerado é de Java 21. Instale um JDK 21 se a disciplina exigir que o `java -version` mostre 21.
+- JDK capaz de compilar `release 21` (JDK 21 recomendado; nesta máquina, em 19/11/2026, o PATH trazia JDK 17 e o build usou o JBR 25 do Android Studio com bytecode 21).
 - Acesso de rede ao Maven Central na primeira execução.
-- Schema Oracle com os scripts aplicados.
-- Variáveis `DB_URL`, `DB_USERNAME` e `DB_PASSWORD`.
+- Schema Oracle do grupo já criado no ambiente FIAP (não rode scripts de carga neste schema compartilhado sem alinhar com Database Design).
+- Variáveis `DB_URL`, `DB_USERNAME` e `DB_PASSWORD` (senha só no ambiente ou em entrada protegida; nunca no repositório).
 
 O Spring Boot não lê `.env` automaticamente. O arquivo `.env.example` é só um lembrete, sem senha real.
 
-PowerShell, na pasta do projeto:
+Forma recomendada no Windows (senha pedida no `Get-Credential`, sem gravar em disco):
 
 ```powershell
-$env:DB_URL = "jdbc:oracle:thin:@//HOST:1521/SERVICO"
-$env:DB_USERNAME = "USUARIO"
-$env:DB_PASSWORD = "SENHA"
+.\scripts\run-oracle-local.ps1
+```
+
+O script define `DB_URL` e `DB_USERNAME` para o Oracle FIAP (SID `ORCL`), opcionalmente ajusta `JAVA_HOME` para o JBR se o PATH tiver só JDK 17, e executa `.\mvnw.cmd spring-boot:run`.
+
+Alternativa manual, na pasta do projeto:
+
+```powershell
+$env:DB_URL = "jdbc:oracle:thin:@oracle.fiap.com.br:1521:ORCL"
+$env:DB_USERNAME = "seu_usuario_rm"
+# DB_PASSWORD: definir nesta sessão, sem commitar
 $env:PORT = "8080"
 .\mvnw.cmd test
 .\mvnw.cmd spring-boot:run
@@ -112,20 +121,21 @@ jdbc:oracle:thin:@//host:1521/nome_do_servico
 jdbc:oracle:thin:@host:1521:SID
 ```
 
-Não há host, usuário nem senha verdadeiros neste repositório.
+A senha não entra no repositório. Host, porta e SID do ambiente acadêmico constam em `.env.example` e no script `scripts/run-oracle-local.ps1`.
 
 ### Oracle
 
-Execute manualmente, em UTF-8, nesta ordem:
+O Spring **não** executa scripts (`spring.sql.init.mode=never`). Os arquivos em `src/main/resources/db/` servem para alinhar com Database Design ou para um schema vazio de laboratório:
 
-1. `src/main/resources/db/01_estrutura.sql`
-2. `src/main/resources/db/02_dados_demonstracao.sql`
+1. `01_estrutura.sql`
+2. `02_dados_demonstracao.sql`
+3. `03_limpeza_manual.sql` — só uso consciente; apaga dados
 
-O arquivo `03_limpeza_manual.sql` apaga os dados. A aplicação não o executa. A seção de `DROP` está comentada.
+No schema do grupo (FIAP), a carga já foi aplicada pelo responsável de Database Design. **Não** recrie nem limpe esse schema pela API desta etapa.
 
-Os scripts não são disparados pelo Spring (`spring.sql.init.mode=never`). Eles são uma proposta para alinhar com Database Design, não o modelo aprovado pelo grupo.
+Conexão da aplicação ao Oracle FIAP foi verificada em 19/11/2026: log de `ConexaoInicial`, leitura dos cadastros e `GET /api/indicadores` com **87** kg ofertados, **9,5** kg entregues, **1** doação entregue e **1** instituição com entrega (referência: 5 estabelecimentos, 5 instituições, 7 lotes, 5 doações). `GET /api/lotes?disponiveis=true` pode retornar lista vazia se todos os prazos já venceram.
 
-Com os dados fictícios intactos, `GET /api/indicadores` tende a responder 39,500 kg ofertados, 9,500 kg entregues, 1 doação entregue e 1 instituição. A carga tem 2 estabelecimentos, 2 instituições, 4 lotes e 2 doações. Se ela for reaproveitada na entrega de Database, aquele trabalho pede pelo menos cinco registros por tabela. Os prazos da demonstração são relativos a `SYSTIMESTAMP`, então continuam válidos depois da data em que o script foi escrito.
+Metadados de sequences (somente leitura, sem `NEXTVAL`): `.\scripts\consultar-sequences-oracle.ps1`.
 
 ### Testes
 
@@ -163,45 +173,43 @@ O passo a passo com comandos está em `docs/roteiro-demonstracao.md`.
 
 ## GitHub
 
-Repositório: **PENDENTE**. Nada foi enviado a um remoto durante esta implementação.
+Repositório: https://github.com/FelipeBonilha1/realimenta-java
 
-Quando o grupo criar o repositório:
-
-```powershell
-git init
-git add .
-git commit -m "Implementa a API ReAlimenta SP"
-git branch -M main
-git remote add origin URL_DO_REPOSITORIO
-git push -u origin main
-```
-
-Confira que `.env` não existe ou não foi adicionado. `.gitignore` já o ignora.
+Confira que `.env` não existe ou não foi adicionado. `.gitignore` já o ignora. Não commite senha Oracle.
 
 ## Render
 
-A imagem está descrita no `Dockerfile`. Ela compila com JDK 21, executa os testes unitários e sobe o JAR com JRE 21. A aplicação lê `PORT`.
+O `Dockerfile` na raiz compila com **Eclipse Temurin JDK 21**, roda `mvnw package` (testes unitários e HTTP com mock, sem Oracle) e executa `target/realimenta-sp.jar` em **JRE 21**. O Tomcat escuta em `${PORT:8080}`.
 
-Variáveis obrigatórias no painel do serviço:
+O `render.yaml` declara um Web Service **Docker** no plano **gratuito**, health check `/api/saude`, `DB_URL`/`DB_USERNAME` fixos e `DB_PASSWORD` com `sync: false` (valor só no painel).
 
-| Variável | Função |
+### Passo a passo no painel
+
+1. [dashboard.render.com](https://dashboard.render.com) → **New** → **Blueprint** (com `render.yaml` no repositório) **ou** **Web Service** conectado a `FelipeBonilha1/realimenta-java`, branch **main**.
+2. **Runtime:** Docker. **Root Directory:** *(vazio)*. **Dockerfile Path:** `./Dockerfile`. **Docker Command:** deixar o `ENTRYPOINT` do Dockerfile. **Health Check Path:** `/api/saude`.
+3. Variáveis:
+
+| Variável | Valor |
 | --- | --- |
-| `DB_URL` | JDBC do Oracle |
-| `DB_USERNAME` | Usuário do schema |
-| `DB_PASSWORD` | Senha do schema |
-| `PORT` | Injetada pelo Render. Não é necessário fixá-la se o painel já a fornece |
+| `DB_URL` | `jdbc:oracle:thin:@oracle.fiap.com.br:1521:ORCL` |
+| `DB_USERNAME` | `rm565341` |
+| `DB_PASSWORD` | Secret no painel (não commitar) |
 
-Health check path sugerido: `/api/saude`.
+Não crie PostgreSQL neste projeto. `PORT` é injetada pelo Render.
 
-Como validar o Oracle a partir do ambiente hospedado:
+4. Validação pública após deploy:
 
-1. `ConexaoInicial` pede uma conexão ao fim da subida. Se o Oracle recusar, o processo encerra. A falha de credencial ou de rede aparece no log do Hikari, com o host, sem a senha na resposta HTTP.
-2. Abra `/api/saude`. Isso prova que o processo respondeu, não que o SQL funcionou.
-3. Abra `/api/estabelecimentos`. Uma lista 200 indica que o Oracle respondeu. Um 500 genérico indica falha, sem SQL na resposta. O detalhe fica no log do Render.
+```text
+GET https://<nome-do-servico>.onrender.com/api/saude
+GET https://<nome-do-servico>.onrender.com/api/estabelecimentos
+GET https://<nome-do-servico>.onrender.com/api/indicadores
+```
 
-O Oracle da FIAP pode recusar o IP do Render. Essa liberação não foi testada. A URL pública do serviço fica **PENDENTE** até alguém publicar e abrir `/api/saude` de verdade.
+`/api/saude` sozinho não prova Oracle. `GET /api/estabelecimentos` com HTTP 200 e JSON confirma leitura no schema do grupo.
 
-Comando local da imagem, quando Docker e as variáveis existirem:
+5. Se o deploy falhar na subida, leia os logs do Render: credencial, SID JDBC, DNS ou bloqueio de IP externo ao Oracle FIAP são causas possíveis — não inferir sem o log.
+
+### Docker local (opcional)
 
 ```powershell
 docker build -t realimenta-sp .
@@ -220,6 +228,9 @@ docker run --rm -p 8080:8080 -e PORT=8080 -e DB_URL -e DB_USERNAME -e DB_PASSWOR
 | `docs/roteiro-demonstracao.md` | Roteiro de reserva, coleta e entrega |
 | `docs/checklist-entrega.md` | Conferência dos requisitos |
 | `prompts.md` | Pedido que originou o projeto e espaço para as próximas interações |
+| `scripts/run-oracle-local.ps1` | Sobe a API com JDBC FIAP e senha protegida |
+| `scripts/consultar-sequences-oracle.ps1` | Consulta MAX(ID) e `USER_SEQUENCES` (somente leitura) |
+| `render.yaml` | Blueprint do Web Service Docker no Render |
 
 Para exportar imagens ao PDF: abra o `.puml` em https://www.plantuml.com/plantuml e o `.mmd` em https://mermaid.live. As imagens não estão geradas neste repositório.
 
@@ -231,5 +242,6 @@ Para exportar imagens ao PDF: abra o `.puml` em https://www.plantuml.com/plantum
 - O prazo não é laudo sanitário.
 - Exclusão física de doação não existe.
 - Estabelecimento com lote, instituição com doação e lote com doação não são apagados.
-- Os testes automatizados não conectaram no Oracle.
-- O deploy no Render não foi executado.
+- O comando `.\mvnw.cmd test` não abre Oracle (MockMvc e simulação). A API em execução (`spring-boot:run`) conectou ao Oracle FIAP em 19/11/2026.
+- O perfil `oracle-it` (`FluxoOracleIT`) não foi executado no schema do grupo; exige usuário e schema exclusivos.
+- O deploy no Render ainda não foi executado.

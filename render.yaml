@@ -1,0 +1,21 @@
+# Blueprint Render — ReAlimenta SP (Web Service Docker, plano gratuito).
+# A senha Oracle nao entra neste arquivo: preencha DB_PASSWORD no painel (sync: false).
+
+services:
+  - type: web
+    name: realimenta-java
+    runtime: docker
+    plan: free
+    region: oregon
+    branch: main
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /api/saude
+    envVars:
+      - key: DB_URL
+        value: jdbc:oracle:thin:@oracle.fiap.com.br:1521:ORCL
+      - key: DB_USERNAME
+        value: rm565341
+      - key: DB_PASSWORD
+        sync: false
+      - key: TZ
+        value: America/Sao_Paulo

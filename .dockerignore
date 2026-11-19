@@ -1,9 +1,12 @@
 target/
 .git/
+.github/
 .idea/
 .vscode/
 .env
+.env.*
 *.log
-*.md
+*.pdf
+scripts/
 docs/
 prompts.md

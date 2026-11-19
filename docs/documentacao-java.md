@@ -14,17 +14,17 @@ Projeto: ReAlimenta SP
 
 API de publicação, reserva, coleta e entrega de alimentos excedentes
 
-Integrantes: PENDENTE — nome e RM
+Integrantes: Felipe Bonilha (RM562356), Felipe Rodrigues (RM565341), Joan Campos (RM562913)
 
-Professor(a): PENDENTE
+Professor(a): Rafael Desiderio
 
-Cidade: São Paulo
+Cidade: São Paulo — bairro de atuação da equipe: Bela Vista
 
 Ano: 2026
 
-Repositório GitHub: PENDENTE
+Repositório GitHub: https://github.com/FelipeBonilha1/realimenta-java
 
-URL no Render: PENDENTE — a aplicação não foi publicada
+URL no Render: publicar via `render.yaml` ou Web Service Docker; preencher a URL `*.onrender.com` nesta capa após o primeiro deploy bem-sucedido
 
 ## Índice
 
@@ -159,7 +159,7 @@ Limitação do MVP: o lote não é dividido. Para ofertar de novo depois de um c
 
 ## 7. Instruções de execução
 
-Ferramentas: JDK 21, Maven Wrapper do repositório e SQL Developer, ou ferramenta equivalente, em UTF-8. Uma conta no Render só entra quando o grupo for publicar. O PDF desta documentação, o repositório GitHub e o deploy ainda não estão concluídos.
+Ferramentas: JDK 21 (ou JDK capaz de compilar `release 21`), Maven Wrapper do repositório e SQL Developer, ou ferramenta equivalente, em UTF-8. Uma conta no Render só entra quando o grupo for publicar. O repositório GitHub está em uso; o PDF único e o deploy no Render ainda são entregas à parte.
 
 O Spring não lê o arquivo `.env`. As variáveis precisam existir no processo.
 
@@ -185,23 +185,22 @@ Ordem manual dos scripts, no schema escolhido, sem execução automática por es
 Comandos, no diretório do projeto:
 
 ```powershell
-$env:JAVA_HOME = "C:\caminho\do\jdk-21"
-$env:DB_URL = "jdbc:oracle:thin:@//host:1521/servico"
-$env:DB_USERNAME = "usuario"
-$env:DB_PASSWORD = "senha"
-.\mvnw.cmd test
-.\mvnw.cmd spring-boot:run
+.\scripts\run-oracle-local.ps1
 ```
+
+O script configura JDBC FIAP (SID `ORCL`), pede senha com `Get-Credential` e inicia `spring-boot:run`. Alternativa manual: definir `DB_URL`, `DB_USERNAME` e `DB_PASSWORD` na sessão e rodar `.\mvnw.cmd spring-boot:run` (ver README e `.env.example`).
 
 `.\mvnw.cmd test` não conecta no Oracle. A integração separada está na seção 10 e só roda com schema exclusivo.
 
-Verificação local:
+Verificação local após a subida:
 
 ```powershell
 Invoke-RestMethod http://localhost:8080/api/saude
+Invoke-RestMethod http://localhost:8080/api/indicadores
+Invoke-RestMethod http://localhost:8080/api/estabelecimentos
 ```
 
-A resposta esperada contém `UP`, `ReAlimenta SP` e `America/Sao_Paulo`. Ela não prova que o banco está acessível.
+`/api/saude` sozinho não prova o banco. A leitura de cadastros ou indicadores, com log `Conexao com o Oracle confirmada na inicializacao`, comprova a conexão. Em 19/11/2026, o schema do grupo respondeu com 87 kg ofertados, 9,5 kg entregues, 1 doação entregue e 1 instituição com entrega.
 
 ## 8. Endpoints
 
@@ -275,7 +274,7 @@ BUILD SUCCESS
 
 Desses 46, 33 são unitários de regra, exceção e instanciação direta de controller. Os outros 13 passam pelo MockMvc. A instanciação direta antiga não substitui esses 13. A classe `FluxoOracleIT` compilou e não foi executada: não havia credencial nem schema exclusivo. O JDK do processo foi o OpenJDK 25.0.2. O bytecode foi gerado com `release 21`. Isso não é execução comprovada em um JDK 21.
 
-Nenhum outro banco foi usado para afirmar que o Oracle foi validado. PDF, GitHub e Render continuam pendentes.
+Nenhum outro banco substituiu o Oracle. A API conectou ao Oracle FIAP do grupo em 19/11/2026. O perfil `oracle-it` não rodou no schema compartilhado. PDF e deploy no Render seguem como entregas futuras.
 
 ## 11. Limitações e decisões para a apresentação
 
@@ -286,7 +285,7 @@ Estas decisões precisam ser explicadas com as próprias palavras do grupo:
 3. O lote cancelado não volta ao cardápio. A nova oferta é outro insert.
 4. `kgOfertados` inclui lote cancelado, reservado, coletado e entregue. Dizer que esse número é comida salva estaria errado.
 5. O protótipo não tem login. Antes de qualquer uso real, é obrigatório controle de acesso e dados que não sejam fictícios.
-6. O grupo ainda precisa preencher nomes, RMs, bairro, URL do GitHub e, se conseguir publicar, a URL real do Render. Não inventar esses campos.
+6. Nomes, RMs, bairro (Bela Vista) e professor (Rafael Desiderio) constam na capa deste markdown. O GitHub está em https://github.com/FelipeBonilha1/realimenta-java. A URL do Render só entra depois de publicar e testar. Não inventar a URL de deploy.
 7. A conectividade do Oracle da FIAP a partir do Render depende de rede e de credencial. Sem esse teste, a apresentação deve dizer que o deploy está preparado e não que está no ar.
 8. Os scripts SQL são uma proposta para alinhar com Database Design. Não são o modelo aprovado pelo grupo.
 9. O teste de integração Oracle está escrito e não foi executado.
