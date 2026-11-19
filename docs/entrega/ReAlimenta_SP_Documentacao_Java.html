@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>ReAlimenta SP — Documentação Java</title>
+  <style>
+    :root {
+      --verde: #1f7a4d;
+      --verde-escuro: #14573a;
+      --tinta: #1d241f;
+      --fundo: #fafaf8;
+      --linha: #d4ddd6;
+    }
+  * { box-sizing: border-box; }
+  body {
+      margin: 0;
+      font-family: "Segoe UI", "Calibri", sans-serif;
+      font-size: 11pt;
+      line-height: 1.45;
+      color: var(--tinta);
+      background: var(--fundo);
+  }
+  @page { size: A4; }
+  .pagina { page-break-after: always; padding: 0 4mm; }
+  .pagina:last-child { page-break-after: auto; }
+  h1, h2, h3 { color: var(--verde-escuro); break-after: avoid; }
+  h1 { font-size: 22pt; margin: 0 0 8px; }
+  h2 { font-size: 14pt; margin: 22px 0 8px; border-bottom: 2px solid var(--verde); padding-bottom: 4px; }
+  h3 { font-size: 12pt; margin: 14px 0 6px; }
+  p { margin: 0 0 8px; text-align: justify; }
+  ul, ol { margin: 0 0 10px 20px; }
+  a { color: var(--verde); }
+  table { width: 100%; border-collapse: collapse; margin: 10px 0 14px; font-size: 10pt; break-inside: avoid; }
+  th, td { border: 1px solid var(--linha); padding: 6px 8px; text-align: left; vertical-align: top; }
+  th { background: #e8f3ec; color: var(--verde-escuro); }
+  thead { display: table-header-group; }
+  .capa {
+      min-height: 250mm;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      text-align: center;
+      border: 3px solid var(--verde);
+      padding: 24mm 16mm;
+      background: white;
+  }
+  .capa .inst { font-size: 13pt; margin-bottom: 20px; }
+  .capa .disciplina { font-size: 12pt; margin: 16px 0; }
+  .capa .meta { font-size: 11pt; margin-top: 24px; line-height: 1.6; }
+  .nota { font-size: 9.5pt; color: #444; background: #fff9ed; border: 1px solid #e2c28a; padding: 8px 10px; border-radius: 6px; margin: 10px 0; }
+  .figura { margin: 12px 0; text-align: center; break-inside: avoid; }
+  .figura img { max-width: 100%; height: auto; border: 1px solid var(--linha); }
+  .legenda { font-size: 9.5pt; color: #444; margin-top: 6px; font-style: italic; }
+  pre, code {
+      font-family: Consolas, "Courier New", monospace;
+      font-size: 9pt;
+      background: #f2f4f2;
+      border: 1px solid var(--linha);
+      border-radius: 4px;
+  }
+  pre { padding: 8px 10px; overflow-x: auto; break-inside: avoid; }
+  .proto {
+      background: #f6f3ea;
+      border: 1px solid var(--linha);
+      border-radius: 8px;
+      padding: 12px;
+      margin: 10px 0;
+  }
+  .proto h4 { margin: 0 0 6px; color: var(--verde-escuro); }
+  .sumario ul { list-style: none; padding: 0; margin: 0; }
+  .sumario li { margin: 8px 0; padding: 2px 0; }
+  .sumario a.toc-link {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    text-decoration: none;
+    color: var(--tinta);
+    padding: 4px 0;
+  }
+  .toc-filler { flex: 1; border-bottom: 1px dotted #bbb; margin: 0 4px; min-width: 12mm; }
+  .toc-pagina { flex-shrink: 0; min-width: 1.5em; text-align: right; font-variant-numeric: tabular-nums; }
+  .figura-proto img { max-width: 100%; max-height: 210mm; width: auto; }
+  .figura-grande img { max-width: 100%; width: 100%; max-height: 220mm; object-fit: contain; }
+  #prototipos h3:not(:first-of-type) { page-break-before: always; margin-top: 0; }
+  </style>
+</head>
+<body>
+
+<section class="pagina capa" id="capa">
+  <p class="inst">FIAP — Faculdade de Informática e Administração Paulista</p>
+  <p>Engenharia de Software — 2º ano</p>
+  <p class="disciplina">Disciplina: Domain Driven Design — Java</p>
+  <h1>ReAlimenta SP</h1>
+  <p>API de publicação, reserva, coleta e entrega de alimentos excedentes</p>
+  <div class="meta">
+    <p><strong>Integrantes:</strong> Felipe Bonilha (RM562356), Felipe Rodrigues (RM565341), Joan Campos (RM562913)</p>
+    <p><strong>Professor:</strong> Rafael Desiderio</p>
+    <p><strong>Cidade / bairro de atuação:</strong> São Paulo — Bela Vista</p>
+    <p><strong>Ano:</strong> 2026</p>
+    <p><strong>GitHub:</strong> <a href="https://github.com/FelipeBonilha1/realimenta-java">github.com/FelipeBonilha1/realimenta-java</a></p>
+    <p><strong>Deploy:</strong> <a href="https://realimenta-java.onrender.com">realimenta-java.onrender.com</a></p>
+  </div>
+</section>
+
+<section class="pagina" id="sumario">
+  <h2>Sumário</h2>
+  <nav class="sumario">
+    <ul>
+      <li><a class="toc-link" href="#apresentacao"><span class="toc-label">1. Apresentação, justificativa e objetivos</span><span class="toc-filler"></span><span class="toc-pagina" data-toc="apresentacao">3</span></a></li>
+      <li><a class="toc-link" href="#arquitetura"><span class="toc-label">2. Arquitetura e implementação</span><span class="toc-filler"></span><span class="toc-pagina" data-toc="arquitetura">4</span></a></li>
+      <li><a class="toc-link" href="#classes"><span class="toc-label">3. Diagrama de classes</span><span class="toc-filler"></span><span class="toc-pagina" data-toc="classes">5</span></a></li>
+      <li><a class="toc-link" href="#banco"><span class="toc-label">4. Banco de dados (DER e sequences)</span><span class="toc-filler"></span><span class="toc-pagina" data-toc="banco">6</span></a></li>
+      <li><a class="toc-link" href="#prototipos"><span class="toc-label">5. Protótipos de telas</span><span class="toc-filler"></span><span class="toc-pagina" data-toc="prototipos">9</span></a></li>
+      <li><a class="toc-link" href="#endpoints"><span class="toc-label">6. Endpoints da API</span><span class="toc-filler"></span><span class="toc-pagina" data-toc="endpoints">13</span></a></li>
+      <li><a class="toc-link" href="#execucao"><span class="toc-label">7. Execução local e Docker</span><span class="toc-filler"></span><span class="toc-pagina" data-toc="execucao">15</span></a></li>
+      <li><a class="toc-link" href="#deploy"><span class="toc-label">8. Deploy no Render e validação pública</span><span class="toc-filler"></span><span class="toc-pagina" data-toc="deploy">16</span></a></li>
+      <li><a class="toc-link" href="#verificacao"><span class="toc-label">9. Verificação de testes</span><span class="toc-filler"></span><span class="toc-pagina" data-toc="verificacao">17</span></a></li>
+    </ul>
+  </nav>
+</section>
+
+<section class="pagina" id="apresentacao">
+  <h2>1. Apresentação, justificativa e objetivos</h2>
+  <h3>Problema</h3>
+  <p>Estabelecimentos comerciais produzem alimento excedente que ainda pode ser aproveitado, enquanto instituições sociais buscam doações. Sem um fluxo simples e registrado, a oferta não chega de forma organizada até quem precisa.</p>
+  <h3>Proposta desta entrega (módulo Java)</h3>
+  <p>O <strong>ReAlimenta SP</strong>, neste repositório, é uma <strong>API REST</strong> que controla cadastros, publicação de lotes, reserva por uma instituição, coleta, confirmação de entrega ou cancelamento antes da coleta, além de indicadores agregados. Não há aplicativo mobile, painel web integrado, autenticação, roteirização, previsão de excedentes nem inteligência artificial neste escopo.</p>
+  <h3>Justificativa</h3>
+  <p>Uma API com regras de negócio explícitas e persistência em Oracle permite ao grupo demonstrar modelagem, camadas, integração com o banco definido em Database Design e operação em ambiente hospedado, sem substituir o trabalho de front-end ou de outros módulos da disciplina.</p>
+  <h3>Objetivos</h3>
+  <ul>
+    <li>Expor recursos HTTP para estabelecimentos, instituições, lotes, doações e indicadores.</li>
+    <li>Garantir uma doação por lote e impedir divisão entre instituições.</li>
+    <li>Registrar o prazo de aproveitamento e filtrar lotes disponíveis com base no relógio de São Paulo.</li>
+    <li>Persistir dados no Oracle FIAP com JDBC explícito (<code>JdbcTemplate</code>).</li>
+    <li>Disponibilizar a API em ambiente público (Render) para demonstração.</li>
+  </ul>
+</section>
+
+<section class="pagina" id="arquitetura">
+  <h2>2. Arquitetura e implementação</h2>
+  <p>O projeto segue camadas separadas, alinhadas ao domínio:</p>
+  <ul>
+    <li><strong>Model:</strong> entidades e enums (<code>Estabelecimento</code>, <code>LoteAlimento</code>, <code>StatusDoacao</code>, etc.).</li>
+    <li><strong>DTO:</strong> contratos JSON de entrada e saída, com validação Bean Validation nos requests.</li>
+    <li><strong>DAO:</strong> SQL explícito com <code>JdbcTemplate</code> (consultas, inserts, updates, <code>FOR UPDATE</code> onde necessário).</li>
+    <li><strong>BO:</strong> regras de negócio e transações (<code>@Transactional</code>) em reserva, coleta, entrega e cancelamento.</li>
+    <li><strong>Controller:</strong> mapeamento REST, códigos HTTP e delegação ao BO.</li>
+    <li><strong>Exception:</strong> exceções de domínio e <code>TratadorExcecoesGlobal</code>, sem expor stack trace ao cliente.</li>
+  </ul>
+  <p>A subida confirma conexão Oracle em <code>ConexaoInicial</code>: se o banco estiver inacessível, a aplicação encerra em vez de responder saúde sem banco.</p>
+  <h3>Ferramentas e versões (pom.xml)</h3>
+  <table>
+    <tr><th>Item</th><th>Versão / observação</th></tr>
+    <tr><td>Spring Boot</td><td>4.1.2</td></tr>
+    <tr><td>Java (bytecode)</td><td>21 (<code>java.version</code>)</td></tr>
+    <tr><td>Web</td><td><code>spring-boot-starter-webmvc</code></td></tr>
+    <tr><td>Persistência</td><td>Spring JDBC + HikariCP</td></tr>
+    <tr><td>Driver Oracle</td><td><code>ojdbc17</code> (BOM Spring Boot)</td></tr>
+    <tr><td>Testes automatizados</td><td>46 testes (JUnit/MockMvc), sem Oracle no <code>mvn test</code></td></tr>
+  </table>
+  <p>Em desenvolvimento local, a compilação usou OpenJDK 25 (Android Studio JBR) com <code>release 21</code> quando o JDK do PATH era 17. O Dockerfile oficial usa Eclipse Temurin 21 para build e runtime.</p>
+  <p>Fuso padrão: <code>America/Sao_Paulo</code>. Prazos de lote em <code>TIMESTAMP(6)</code>, comparados em microssegundo em <code>DatasJdbc</code>.</p>
+</section>
+
+<section class="pagina" id="classes">
+  <h2>3. Diagrama de classes</h2>
+  <p>O diagrama resume controllers, BOs, DAOs, models e DTOs, com relacionamento entre lote e doação (0..1).</p>
+  <figure class="figura figura-grande">
+    <img src="fig-classes.png" alt="Diagrama de classes ReAlimenta SP">
+    <figcaption class="legenda">Figura 1 — Diagrama de classes (fonte: <code>docs/diagrama-classes.puml</code>). Protótipo de modelagem; o código é a referência de implementação.</figcaption>
+  </figure>
+</section>
+
+<section class="pagina" id="banco">
+  <h2>4. Banco de dados</h2>
+  <p>As tabelas <code>ESTABELECIMENTO</code>, <code>INSTITUICAO</code>, <code>LOTE_ALIMENTO</code> e <code>DOACAO</code> foram criadas e populadas no schema Oracle do grupo (Database Design). Os scripts em <code>src/main/resources/db/</code> são referência; a aplicação não os executa (<code>spring.sql.init.mode=never</code>).</p>
+  <figure class="figura figura-grande">
+    <img src="fig-der.png" alt="DER ReAlimenta SP">
+    <figcaption class="legenda">Figura 2 — DER lógico (fonte: <code>docs/der.mmd</code>) das quatro tabelas do schema Oracle do grupo.</figcaption>
+  </figure>
+  <h3>Sequences</h3>
+  <p>No schema do grupo, as sequences <code>SEQ_ESTABELECIMENTO</code>, <code>SEQ_INSTITUICAO</code>, <code>SEQ_LOTE_ALIMENTO</code> e <code>SEQ_DOACAO</code> usam <code>INCREMENT BY 1</code>, <code>NOCACHE</code> e iniciam em 5 nos scripts de referência. Em consulta de leitura (19/11/2026), <code>LAST_NUMBER</code> era 8 com <code>MAX(ID)=7</code> nas quatro tabelas — coerente com NOCACHE (não confundir <code>LAST_NUMBER</code> com o próximo ID em cenários com cache).</p>
+  <p>Carga de referência no ambiente compartilhado, via API: 5 estabelecimentos, 5 instituições, 7 lotes, 5 doações.</p>
+</section>
+
+<section class="pagina" id="prototipos">
+  <h2>5. Protótipos de telas</h2>
+  <p class="nota">Capturas de <code>docs/prototipos.html</code>. São <strong>protótipos estáticos</strong> (wireframes de apresentação): os botões não integram a API Spring Boot. Os valores exibidos no painel do HTML seguem o roteiro fictício do arquivo; a API em produção respondeu 87 kg ofertados e 9,5 kg entregues em 19/11/2026.</p>
+  <h3>Protótipo 1 — Cadastro de lote</h3>
+  <p>Corresponde a <code>POST /api/lotes</code>: estabelecimento, categoria, descrição, quantidade e prazo.</p>
+  <figure class="figura figura-proto">
+    <img src="fig-proto-1-cadastro.png" alt="Protótipo cadastro de lote">
+    <figcaption class="legenda">Figura 3 — Protótipo: publicação de lote (não é frontend em produção).</figcaption>
+  </figure>
+  <h3>Protótipo 2 — Consulta e reserva</h3>
+  <p>Listagem com foco em lotes disponíveis (<code>GET /api/lotes?disponiveis=true</code>) e ação de reserva (<code>POST /api/doacoes</code>).</p>
+  <figure class="figura figura-proto">
+    <img src="fig-proto-2-reserva.png" alt="Protótipo reserva de lotes">
+    <figcaption class="legenda">Figura 4 — Protótipo: consulta e reserva do lote inteiro por uma instituição.</figcaption>
+  </figure>
+  <h3>Protótipo 3 — Acompanhamento da doação</h3>
+  <p>Acompanha status, coleta, entrega e cancelamento antes da coleta (endpoints <code>PUT</code> em <code>/api/doacoes/{id}/...</code>).</p>
+  <figure class="figura figura-proto">
+    <img src="fig-proto-3-entrega.png" alt="Protótipo acompanhamento de doação">
+    <figcaption class="legenda">Figura 5 — Protótipo: fluxo de coleta, entrega e cancelamento.</figcaption>
+  </figure>
+  <h3>Protótipo 4 — Indicadores</h3>
+  <p>Visualização agregada de <code>GET /api/indicadores</code> (kg ofertados, kg entregues, contagens de entrega).</p>
+  <figure class="figura figura-proto">
+    <img src="fig-proto-4-painel.png" alt="Protótipo painel de indicadores">
+    <figcaption class="legenda">Figura 6 — Protótipo: painel de indicadores (números do HTML são ilustrativos do roteiro).</figcaption>
+  </figure>
+</section>
+
+<section class="pagina" id="endpoints">
+  <h2>6. Endpoints da API</h2>
+  <p>Base em produção: <a href="https://realimenta-java.onrender.com">https://realimenta-java.onrender.com</a>. A rota raiz <code>/</code> não define página inicial e pode responder 404 — use os caminhos <code>/api/...</code>.</p>
+  <table>
+    <thead>
+      <tr><th>Método</th><th>Caminho</th><th>Finalidade</th><th>Respostas principais</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>GET</td><td>/api/saude</td><td>Disponibilidade do processo</td><td>200 — não consulta Oracle</td></tr>
+      <tr><td>GET</td><td>/api/estabelecimentos</td><td>Listar estabelecimentos</td><td>200 lista; 500 falha de banco</td></tr>
+      <tr><td>GET</td><td>/api/estabelecimentos/{id}</td><td>Buscar por id</td><td>200 / 404</td></tr>
+      <tr><td>POST</td><td>/api/estabelecimentos</td><td>Criar</td><td>201 + Location / 400 / 409</td></tr>
+      <tr><td>PUT</td><td>/api/estabelecimentos/{id}</td><td>Atualizar cadastro</td><td>200 / 404 / 409</td></tr>
+      <tr><td>DELETE</td><td>/api/estabelecimentos/{id}</td><td>Excluir se sem lote</td><td>204 / 409</td></tr>
+      <tr><td>GET</td><td>/api/instituicoes</td><td>Listar instituições</td><td>200</td></tr>
+      <tr><td>GET</td><td>/api/instituicoes/{id}</td><td>Buscar por id</td><td>200 / 404</td></tr>
+      <tr><td>POST</td><td>/api/instituicoes</td><td>Criar</td><td>201</td></tr>
+      <tr><td>PUT</td><td>/api/instituicoes/{id}</td><td>Atualizar</td><td>200</td></tr>
+      <tr><td>DELETE</td><td>/api/instituicoes/{id}</td><td>Excluir se sem doação</td><td>204 / 409</td></tr>
+      <tr><td>GET</td><td>/api/lotes</td><td>Listar lotes</td><td>200; query <code>disponiveis=true</code></td></tr>
+      <tr><td>GET</td><td>/api/lotes/{id}</td><td>Buscar lote</td><td>200 / 404</td></tr>
+      <tr><td>POST</td><td>/api/lotes</td><td>Publicar lote</td><td>201</td></tr>
+      <tr><td>PUT</td><td>/api/lotes/{id}</td><td>Atualizar dados (sem status)</td><td>200 / 409</td></tr>
+      <tr><td>DELETE</td><td>/api/lotes/{id}</td><td>Excluir sem doação</td><td>204 / 409</td></tr>
+      <tr><td>GET</td><td>/api/doacoes</td><td>Listar doações</td><td>200</td></tr>
+      <tr><td>GET</td><td>/api/doacoes/{id}</td><td>Buscar doação</td><td>200 / 404</td></tr>
+      <tr><td>POST</td><td>/api/doacoes</td><td>Reservar lote</td><td>201 / 409</td></tr>
+      <tr><td>PUT</td><td>/api/doacoes/{id}/coleta</td><td>Registrar coleta</td><td>200</td></tr>
+      <tr><td>PUT</td><td>/api/doacoes/{id}/entrega</td><td>Registrar entrega</td><td>200</td></tr>
+      <tr><td>PUT</td><td>/api/doacoes/{id}/cancelamento</td><td>Cancelar antes da coleta</td><td>200</td></tr>
+      <tr><td>GET</td><td>/api/indicadores</td><td>Indicadores agregados</td><td>200</td></tr>
+    </tbody>
+  </table>
+  <h3>Exemplo — reserva</h3>
+  <pre>POST /api/doacoes
+Content-Type: application/json
+
+{"loteId":1,"instituicaoId":1}</pre>
+  <h3>Exemplo — indicadores (observado em produção, 19/11/2026)</h3>
+  <pre>{"kgOfertados":87.000,"kgEntregues":9.500,"doacoesEntregues":1,"instituicoesComEntrega":1}</pre>
+</section>
+
+<section class="pagina" id="execucao">
+  <h2>7. Execução local e Docker</h2>
+  <h3>Variáveis obrigatórias</h3>
+  <table>
+    <tr><th>Variável</th><th>Uso</th></tr>
+    <tr><td>DB_URL</td><td><code>jdbc:oracle:thin:@oracle.fiap.com.br:1521:ORCL</code></td></tr>
+    <tr><td>DB_USERNAME</td><td>Usuário do schema (ex.: rm565341)</td></tr>
+    <tr><td>DB_PASSWORD</td><td>Senha — somente ambiente ou painel hospedado</td></tr>
+    <tr><td>PORT</td><td>Porta HTTP (8080 local; Render injeta)</td></tr>
+  </table>
+  <p>No Windows, <code>scripts/run-oracle-local.ps1</code> define URL e usuário FIAP e solicita a senha com <code>Get-Credential</code>, sem gravar em disco.</p>
+  <p>Comandos: <code>.\mvnw.cmd test</code> (sem Oracle); <code>.\mvnw.cmd spring-boot:run</code> com variáveis definidas.</p>
+  <h3>Docker</h3>
+  <p><code>docker build -t realimenta-sp .</code> — compila e testa dentro da imagem JDK 21. Execução com <code>-e DB_URL -e DB_USERNAME -e DB_PASSWORD -e PORT</code>.</p>
+  <p class="nota">Não reaplique <code>01_estrutura.sql</code> / <code>02_dados_demonstracao.sql</code> no schema compartilhado já populado. Não execute <code>-Poracle-it</code> nesse schema.</p>
+</section>
+
+<section class="pagina" id="deploy">
+  <h2>8. Deploy no Render e validação pública</h2>
+  <p><strong>Serviço:</strong> Web Service Docker, plano gratuito, health check <code>/api/saude</code>, variáveis Oracle no painel (ver <code>render.yaml</code>).</p>
+  <p><strong>URL:</strong> <a href="https://realimenta-java.onrender.com">https://realimenta-java.onrender.com</a></p>
+  <h3>Verificação GET — 19/11/2026</h3>
+  <table>
+    <thead><tr><th>Endpoint</th><th>HTTP</th><th>Resumo observado</th></tr></thead>
+    <tbody>
+      <tr><td>/api/saude</td><td>200</td><td><code>status: UP</code>, fuso America/Sao_Paulo</td></tr>
+      <tr><td>/api/estabelecimentos</td><td>200</td><td>5 registros (confirma leitura Oracle)</td></tr>
+      <tr><td>/api/instituicoes</td><td>200</td><td>5 registros</td></tr>
+      <tr><td>/api/lotes</td><td>200</td><td>7 registros</td></tr>
+      <tr><td>/api/doacoes</td><td>200</td><td>5 registros</td></tr>
+      <tr><td>/api/indicadores</td><td>200</td><td>87 kg ofertados; 9,5 kg entregues; 1 entrega; 1 instituição</td></tr>
+    </tbody>
+  </table>
+  <p>Estes testes foram somente leitura. Não comprovam POST/PUT concorrentes nem o perfil de integração <code>oracle-it</code>.</p>
+  <p>Links de demonstração:</p>
+  <ul>
+    <li><a href="https://realimenta-java.onrender.com/api/estabelecimentos">…/api/estabelecimentos</a></li>
+    <li><a href="https://realimenta-java.onrender.com/api/indicadores">…/api/indicadores</a></li>
+  </ul>
+</section>
+
+<section class="pagina" id="verificacao">
+  <h2>9. Verificação de testes</h2>
+  <table>
+    <tr><th>Tipo</th><th>Comando / meio</th><th>O que comprova</th></tr>
+    <tr><td>Unitário + BO</td><td><code>mvnw test</code></td><td>Regras com mocks; 46 testes, 0 falhas (nov/2026)</td></tr>
+    <tr><td>HTTP mockado</td><td>MockMvc nos controllers</td><td>Contrato JSON e status; sem banco</td></tr>
+    <tr><td>Integração Oracle</td><td><code>-Poracle-it</code></td><td>Escrito em <code>FluxoOracleIT</code>; não executado no schema do grupo</td></tr>
+    <tr><td>Produção</td><td>GET na URL Render</td><td>Leitura real no Oracle do grupo (19/11/2026)</td></tr>
+  </table>
+</section>
+
+</body>
+</html>

@@ -18,7 +18,7 @@ Integrantes e RMs: Felipe Bonilha (RM562356), Felipe Rodrigues (RM565341), Joan 
 
 Professor: Rafael Desiderio.
 
-URL de deploy: preencher aqui após publicar no Render (formato `https://realimenta-java.onrender.com`).
+URL de deploy: https://realimenta-java.onrender.com
 
 ---
 

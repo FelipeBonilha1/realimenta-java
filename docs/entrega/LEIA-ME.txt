@@ -1,0 +1,20 @@
+ReAlimenta SP — entrega da documentação Java
+
+Arquivos principais:
+- ReAlimenta_SP_Documentacao_Java.pdf  (entregar à disciplina)
+- ReAlimenta_SP_Documentacao_Java.html (editar texto e regerar o PDF)
+- fig-classes.png, fig-der.png
+- fig-proto-1-cadastro.png … fig-proto-4-painel.png (protótipos)
+- gerar-pdf.js, capturar-prototipos.js, verificar-pdf.js
+- conferencia-enunciado.md
+
+Para regerar protótipos (após mudar docs/prototipos.html):
+  cd docs\entrega
+  npm install puppeteer-core@24 pdf-parse@1 --no-save
+  node capturar-prototipos.js
+
+Para regerar o PDF (atualiza também os números do sumário no HTML):
+  node gerar-pdf.js
+  node verificar-pdf.js
+
+Não commite senhas. node_modules nesta pasta é só para geração local. Não incluir credenciais no HTML/PDF.

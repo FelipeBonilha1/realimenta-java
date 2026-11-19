@@ -24,7 +24,9 @@ Ano: 2026
 
 Repositório GitHub: https://github.com/FelipeBonilha1/realimenta-java
 
-URL no Render: publicar via `render.yaml` ou Web Service Docker; preencher a URL `*.onrender.com` nesta capa após o primeiro deploy bem-sucedido
+URL no Render: https://realimenta-java.onrender.com
+
+PDF único de entrega: `docs/entrega/ReAlimenta_SP_Documentacao_Java.pdf` (fonte editável: `docs/entrega/ReAlimenta_SP_Documentacao_Java.html`)
 
 ## Índice
 

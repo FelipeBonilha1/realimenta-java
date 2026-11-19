@@ -8,3 +8,7 @@ target/
 .env
 *.log
 .DS_Store
+docs/entrega/node_modules/
+docs/entrega/.tmp-documentacao.pdf
+docs/entrega/package-lock.json
+docs/documentacao-java.pdf
